@@ -5,12 +5,13 @@
 # Main functionality additions are handling of serial errors and support for additional arguments
 # Tested on Ubuntu 16.02 with Python2.7, Windows 2016 Server with Python3.6 and MacOS High Sierra with Python2.7
 
+#import serial
 from serial import Serial, SerialException, PARITY_ODD, PARITY_NONE
 import sys
 import argparse
 import json
 
-def establish_serial_connection(port, speed=115200, timeout=10, writeTimeout=10000):
+def establish_serial_connection(port = "COM7", speed=115200, timeout=10, writeTimeout=10000):
     # Hack for USB connection
     # There must be a way to do it cleaner, but I can't seem to find it
     try:
@@ -29,14 +30,14 @@ def establish_serial_connection(port, speed=115200, timeout=10, writeTimeout=100
         print ("Could not connect to {0} at baudrate {1}\nIO error: {2}".format(port, str(speed), e))
         return None
 
-def get_current_values(port):
+def get_current_values(port = "COM7"):
 
     # This function makes lots of assumptions about the output of the printer,
     # but I am not sure if writing it in regex or improving it any other way would make any difference
     # as this is unique for printer with this code and may not work for anything else
 
     port.write(('G28\n').encode())
-    port.write(('G29 P2 V4\n').encode())
+    port.write(('G29\n').encode())
 
     while True:
         out = port.readline().decode()
@@ -171,9 +172,9 @@ def main():
     trial_z = 0.0
     trial_x = 0.0
     trial_y = 0.0
-    r_value = 63.2
-    step_mm = 57.14
-    l_value = 123.8
+    r_value = 141.623 #63.2
+    step_mm = 640  #57.14
+    l_value = 283.000 #123.8
 
 
     parser = argparse.ArgumentParser(description='Auto-Bed Cal. for Monoprice Mini Delta')
